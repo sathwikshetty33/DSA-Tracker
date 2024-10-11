@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'counter.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!DOCTYPE html>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="fas fa-stopwatch me-2"></i>
+                Welcome {{ user.username }}!
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="classesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Classes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="classesDropdown">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#joinClassModal">Join Class</a></li>
+                            <li><a class="dropdown-item" href="{% url 'myclass' user.id %}">Your Classes</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'results' user.id %}">
+                            <i class="fas fa-history me-1"></i> Past results
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+ {% for message in messages %}
+<div class="alert alert-primary" role="alert">
+    {{ message }}
+</div>
+{% endfor %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                    <button id="start" class="btn btn-primary">
+                        <i class="fas fa-play me-1"></i> Start
+                    </button>
+                    <div class="btn-group">
+                        <button id="em" class="btn btn-secondary">-</button>
+                        <button id="e" class="btn btn-info">
+                            <i class="fas fa-battery-quarter me-1"></i> Easy
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button id="mm" class="btn btn-secondary">-</button>
+                        <button id="m" class="btn btn-info">
+                            <i class="fas fa-battery-half me-1"></i> Medium
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button id="hm" class="btn btn-secondary">-</button>
+                        <button id="h" class="btn btn-info">
+                            <i class="fas fa-battery-full me-1"></i> Hard
+                        </button>
+                    </div>
+                    <button id="end" class="btn btn-warning">
+                        <i class="fas fa-pause me-1"></i> Pause
+                    </button>
+                </div>
+
+                <div class="timer-container text-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div><span class="digit" id="hr">00</span><span class="txt">Hr</span></div>
+                        <div class="mx-2 digit">:</div>
+                        <div><span class="digit" id="min">00</span><span class="txt">Min</span></div>
+                        <div class="mx-2 digit">:</div>
+                        <div><span class="digit" id="sec">00</span><span class="txt">Sec</span></div>
+                         <div class="mx-2 digit">:</div>
+                        <div><span class="digit" id="count">00</span></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <div class="con text-center">
+                        <i class="fas fa-tasks counter-icon"></i>
+                        <div id="easym" class="h3 mb-0">0</div>
+                        <div>Easy</div>
+                    </div>
+                    <div class="con text-center">
+                        <i class="fas fa-chart-line counter-icon"></i>
+                        <div id="mediumm" class="h3 mb-0">0</div>
+                        <div>Medium</div>
+                    </div>
+                    <div class="con text-center">
+                        <i class="fas fa-brain counter-icon"></i>
+                        <div id="hardm" class="h3 mb-0">0</div>
+                        <div>Hard</div>
+                    </div>
+                </div>
+
+                <form id="taskForm" method="POST" class="mt-4">
+                    {% csrf_token %}
+                    <input type="hidden" id="easy" name="easy" value="0">
+                    <input type="hidden" id="medium" name="medium" value="0">
+                    <input type="hidden" id="hard" name="hard" value="0">
+                    <input type="hidden" id="takentime" name="takentime" value="">
+                    <input type="hidden" id="username" name="username" value="{{ user.id }}">
+                    <input type="hidden" id="date" name="date" value="0">
+                    <input type="hidden" id="submittime" name="submittime" value="">
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    <li>{{ field.label }}: {{ field.errors }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-success" id="submit">
+                            <i class="fas fa-check-circle me-1"></i> Submit
+                        </button>
+                        <button type="button" class="btn btn-danger" id="reset">
+                            <i class="fas fa-redo-alt me-1"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="joinClassModal" tabindex="-1" aria-labelledby="joinClassModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="joinClassModalLabel">Join a Class</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" >
+                        {% csrf_token %}
+
+
+                        <div class="mb-3">
+                            <label for="classCode" class="form-label">Class Code</label>
+                            <input type="text" class="form-control" id="classCode" name="room" required>
+                        </div>
+                        <input type="hidden" id="student" name="student" value="{{ user.id }}">
+                        <button type="submit" class="btn btn-primary">Join Class</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'script.js' %}"></script>
+</body>
+</html>

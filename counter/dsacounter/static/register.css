@@ -1,0 +1,175 @@
+/* styles.css */
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --text-color: #34495e;
+    --background-color: #ecf0f1;
+    --card-bg: #ffffff;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.teacher-login {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--secondary-color);
+    color: var(--card-bg);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInCard {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInText {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+body {
+    animation: fadeInUp 1s ease-out;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.gradient-custom-2 {
+    /* Gradient background */
+    background-image: url('./indie/loginbg1.jpg');
+    background-size: cover;
+}
+
+.gradient-form {
+    background-color: var(--background-color);
+    height: 80vh; /* Further reduce the height */
+}
+
+.container {
+    max-width: 600px; /* Slightly narrower container */
+    /* Reduce top padding */
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    background-color: var(--card-bg);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.text-center img {
+    width: 120px; /* Smaller logo */
+}
+
+.btn {
+    padding: 5px 15px; /* Smaller buttons */
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background-color: var(--secondary-color);
+    color: var(--card-bg);
+}
+
+.btn-warning {
+    background-color: var(--accent-color);
+    color: var(--card-bg);
+}
+
+h4, p {
+    font-size: 14px; /* Smaller headings and text */
+    color: var(--text-color);
+}
+
+/* Additional color applications */
+input, textarea, select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--secondary-color);
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+a {
+    color: var(--secondary-color);
+    transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .col-lg-6 {
+        flex: 0 0 100%; /* Stacks elements vertically on smaller screens */
+        max-width: 100%;
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.btn-add-class:focus {
+    animation: pulse 0.5s;
+}

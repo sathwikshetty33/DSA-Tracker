@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submissions for {{ class.roomname }}</title>
+    <link href="{% static 'dashboard.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+   <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #34495e;
+            --background-color: #ecf0f1;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-link {
+            color: var(--card-bg) !important;
+            transition: color 0.3s ease-in-out, transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            transition: all 0.3s ease-in-out;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--card-bg);
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .submissions-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .submission-date {
+            cursor: pointer;
+        }
+
+        .table {
+            color: var(--text-color);
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: var(--background-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">
+                <i class="fas fa-chalkboard-teacher me-2"></i>
+                Teacher Dashboard
+            </a>
+
+            <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fa-solid fa-house"></i> Home
+                        </a>
+                    </li>
+                </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Submissions for {{ class.roomname }}</h1>
+        <div class="submissions-container">
+            {% regroup obj2 by date as progress_by_date %}
+            {% for date in progress_by_date %}
+                <div class="card mb-3">
+                    <div class="card-header submission-date" data-bs-toggle="collapse" data-bs-target="#collapse-{{ date.grouper|date:'Ymd' }}">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        {{ date.grouper|date:"F d, Y" }}
+                        <i class="fas fa-chevron-down float-end"></i>
+                    </div>
+                    <div id="collapse-{{ date.grouper|date:'Ymd' }}" class="collapse">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Time Taken</th>
+                                            <th>Submit Time</th>
+                                            <th>Easy</th>
+                                            <th>Medium</th>
+                                            <th>Hard</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in date.list %}
+                                            <tr>
+                                                <td>{{ item.username.username }}</td>
+                                                <td>{{ item.takentime }}</td>
+                                                <td>{{ item.submittime }}</td>
+                                                <td>{{ item.easy }}</td>
+                                                <td>{{ item.medium }}</td>
+                                                <td>{{ item.hard }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No submissions found for this class.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var submissionDates = document.querySelectorAll('.submission-date');
+            submissionDates.forEach(function(date) {
+                date.addEventListener('click', function() {
+                    this.querySelector('.fa-chevron-down').classList.toggle('fa-chevron-up');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
