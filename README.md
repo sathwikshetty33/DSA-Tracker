@@ -1,9 +1,9 @@
-## DSA Practice Tracker
+# DSA Practice Tracker
 A Django-based web application designed to help users track their Data Structures and Algorithms (DSA) practice sessions. The platform enables students to monitor their problem-solving progress and allows teachers to create virtual classrooms for tracking student performance.
-# Features
+## Features
 For Students
 
-# Problem Tracking System
+## Problem Tracking System
 
 Track problems solved across three difficulty levels:
 
@@ -18,7 +18,7 @@ Join multiple classes using unique class codes
 
 
 
-# For Teachers
+## For Teachers
 
 Classroom Management
 
@@ -31,13 +31,13 @@ View date-wise submission statistics
 
 
 
-# User Management
+## User Management
 
 Role-based access control (Student/Teacher)
 Staff status allocation for teacher privileges
 Secure authentication system
 
-# Tech Stack
+## Tech Stack
 Frontend
 
 HTML
