@@ -18,5 +18,6 @@ urlpatterns = [
       path('delte-<int:studentid>-from-<int:roomid>/', views.deletestudent , name='deletestudent'),
       path('exitclass-<int:userid>-from-<int:roomid>/', views.exitclass , name='exitclass'),
       path('myclasses-<int:userid>/', views.myclass , name='myclass'),
+      path('tsignup', views.tsignup, name='tsignup')
 
    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

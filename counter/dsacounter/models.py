@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Model
 
+
+class teacher(models.Model):
+    teacher=models.ForeignKey(User, on_delete=models.CASCADE,blank=True,null=True)
 
 class progress( models.Model):
     username= models.ForeignKey(User, on_delete=models.CASCADE,blank=True,null=True)

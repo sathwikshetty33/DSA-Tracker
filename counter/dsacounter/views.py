@@ -1,3 +1,5 @@
+from logging import error
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect,get_object_or_404
 from .forms import *
@@ -103,8 +105,13 @@ def teacherlogin(request):
             user = authenticate(username=username, password=password)
 
             if user is not None:
-                login(request, user)
-                return redirect('dashboard')
+                te = teacher.objects.filter(teacher=user)
+                if not te.exists():
+                    messages.error(request, "Become a teacher first")
+                    return redirect('teacherlogin')
+                else:
+                    login(request, user)
+                    return redirect('dashboard')
             else:
                 messages.error(request, 'Please correct the error(s) below.')
     else:
@@ -114,51 +121,97 @@ def teacherlogin(request):
         'form': form
     }
     return render(request, 'dsacounter/tlogin.html', context)
-@staff_member_required
+@login_required(login_url='teacherlogin')
 def dashboard(request):
     username = request.user
-    obj = rooms.objects.filter(teacherid=username)  # Assuming `rooms` is your model
-    def generate_unique_number():
-        while True:
-            random_number = random.randint(10000, 99999)
-            if not obj.filter(roomid=random_number).exists():
-                return random_number
-    unique_number = generate_unique_number()
-    if request.method=='POST':
-        form=room(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
-        else:
-            return redirect('dashboard')
-    form = room()
-    return render(request, 'dsacounter/dashboard.html',{ 'obj': obj , 'unique_number': unique_number,'form':form })
-@staff_member_required
+    tea = teacher.objects.filter(teacher=username).first()
+    if tea is not None:
+        obj = rooms.objects.filter(teacherid=username)  # Assuming `rooms` is your model
+        def generate_unique_number():
+            while True:
+                random_number = random.randint(10000, 99999)
+                if not obj.filter(roomid=random_number).exists():
+                    return random_number
+        unique_number = generate_unique_number()
+        if request.method=='POST':
+            form=room(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('dashboard')
+            else:
+                return redirect('dashboard')
+        form = room()
+        return render(request, 'dsacounter/dashboard.html',{ 'obj': obj , 'unique_number': unique_number,'form':form })
+    else:
+        return redirect('tlogin')
+@login_required(login_url='teacherlogin')
 def roomdelete(request, roomid):
-    obj=get_object_or_404(rooms,roomid=roomid)
-    obj.delete()
-    return redirect('dashboard')
-@login_required
-def myclass(request, userid):
-    obj1 = get_object_or_404(User, id=userid)
-    obj2 = rooms.objects.filter(students=userid)
+    username = request.user
+    tea = teacher.objects.filter(teacher=username).first()
+    if tea is not None:
+        obj=get_object_or_404(rooms,roomid=roomid)
+        obj.delete()
+    else:
+        return redirect('tlogin')
 
-    return render(request, 'dsacounter/myclasses.html', {'obj1': obj1, 'obj2': obj2})
-@staff_member_required
+@login_required(login_url='teacherlogin')
+def myclass(request, userid):
+    username = request.user
+    tea = teacher.objects.filter(teacher=username).first()
+    if tea is not None:
+        obj1 = get_object_or_404(User, id=userid)
+        obj2 = rooms.objects.filter(students=userid)
+        return render(request, 'dsacounter/myclasses.html', {'obj1': obj1, 'obj2': obj2})
+    else:
+        return redirect('tlogin')
+@login_required(login_url='teacherlogin')
 def submissions(request, roomid):
-    obj1= rooms.objects.get(roomid=roomid)
-    obj=obj1.students.all()
-    obj2=progress.objects.filter(username__in=obj)
-    return render(request, 'dsacounter/submissions.html', {'class': obj1, 'obj2': obj2})
-@staff_member_required
+    username = request.user
+    tea = teacher.objects.filter(teacher=username).first()
+    if tea is not None:
+        obj1= rooms.objects.get(roomid=roomid)
+        obj=obj1.students.all()
+        obj2=progress.objects.filter(username__in=obj)
+        return render(request, 'dsacounter/submissions.html', {'class': obj1, 'obj2': obj2})
+    else:
+        return redirect('tlogin')
+@login_required(login_url='teacherlogin')
 def deletestudent(request, roomid, studentid):
-    obj=get_object_or_404(studying,room=roomid,student=studentid)
-    obj.delete()
-    messages.success(request, 'Deleted suceesfully')
-    return redirect('dashboard')
-@login_required
+    username = request.user
+    tea = teacher.objects.filter(teacher=username).first()
+    if tea is not None:
+        obj=get_object_or_404(studying,room=roomid,student=studentid)
+        obj.delete()
+        messages.success(request, 'Deleted suceesfully')
+        return redirect('dashboard')
+    else:
+        return redirect('tlogin')
+@login_required(login_url='login')
 def exitclass(request, userid, roomid):
     obj = get_object_or_404(studying, room=roomid, student=userid)
     obj.delete()
     messages.success(request, 'Exited suceesfully')
     return redirect('myclass', userid)
+
+def tsignup(request):
+    if request.method == 'POST':
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+        user = User.objects.filter(username=username).first()
+        if user is None:
+            messages.error(request,"User does not exist first create a account")
+            return redirect('tsignup')
+        else:
+            users=authenticate(username=username,password=password)
+            if users is None:
+                messages.error(request,'Incorrect password')
+                return redirect('tsignup')
+            else:
+                te=teacher.objects.filter(teacher=user)
+                if not te.exists():
+                    newt=teacher.objects.create(teacher=user)
+                    newt.save()
+                    return redirect('tlogin')
+                else:
+                    messages.error(request,'Already a teacher')
+    return render(request,'dsacounter/tsignup.html')
