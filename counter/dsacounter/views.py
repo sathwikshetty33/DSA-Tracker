@@ -108,7 +108,7 @@ def teacherlogin(request):
                 te = teacher.objects.filter(teacher=user)
                 if not te.exists():
                     messages.error(request, "Become a teacher first")
-                    return redirect('teacherlogin')
+                    return redirect('tlogin')
                 else:
                     login(request, user)
                     return redirect('dashboard')
