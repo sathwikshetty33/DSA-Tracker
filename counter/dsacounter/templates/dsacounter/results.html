@@ -18,10 +18,42 @@
             border: none;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+        .table-responsive-wrapper {
+            position: relative;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .results-table {
+            min-width: 768px; /* Ensures table doesn't shrink too much */
+        }
+        .results-row {
+            display: flex;
+            align-items: center;
+        }
+        .results-col {
+            flex: 1;
+            padding: 8px;
+            min-width: 100px; /* Minimum width for each column */
+            word-wrap: break-word;
+        }
+        .delete-col {
+            width: 50px;
+            flex: none;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .table-responsive-wrapper {
+                margin: 0 -15px;
+                padding: 0 15px;
+            }
+        }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <span class="navbar-brand">
                 <i class="fas fa-stopwatch me-2"></i>
@@ -50,31 +82,39 @@
     <div class="container mt-5">
         <h2 class="text-center mb-4">{{user.username}} Test Results</h2>
 
-        <div class="row font-weight-bold text-white bg-primary p-2">
-            <div class="col">Date</div>
-            <div class="col">Submit Time</div>
-            <div class="col">Easy</div>
-            <div class="col">Medium</div>
-            <div class="col">Hard</div>
-            <div class="col">Time Taken</div>
-            <div class="col"></div>
-        </div>
+        <div class="table-responsive-wrapper">
+            <div class="results-table">
+                <!-- Header Row -->
+                <div class="results-row font-weight-bold text-white bg-primary">
+                    <div class="results-col">Date</div>
+                    <div class="results-col">Submit Time</div>
+                    <div class="results-col">Easy</div>
+                    <div class="results-col">Medium</div>
+                    <div class="results-col">Hard</div>
+                    <div class="results-col">Time Taken</div>
+                    <div class="delete-col"></div>
+                </div>
 
-       {% for result in obj %}
-        <div class="row border-bottom p-2">
-            <div class="col">{{ result.date }}</div>
-            <div class="col">{{ result.submittime }}</div>
-            <div class="col">{{ result.easy }}</div>
-            <div class="col">{{ result.medium }}</div>
-            <div class="col">{{ result.hard }}</div>
-            <div class="col">{{ result.takentime }}</div>
-            <div class="col">
-                <button onclick="openDialog('{% url 'dele' user.id result.date result.submittime %}')" class="btn btn-link p-0" style="border: none; background: none;">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                <!-- Data Rows -->
+                {% for result in obj %}
+                <div class="results-row border-bottom">
+                    <div class="results-col">{{ result.date }}</div>
+                    <div class="results-col">{{ result.submittime }}</div>
+                    <div class="results-col">{{ result.easy }}</div>
+                    <div class="results-col">{{ result.medium }}</div>
+                    <div class="results-col">{{ result.hard }}</div>
+                    <div class="results-col">{{ result.takentime }}</div>
+                    <div class="delete-col">
+                        <button onclick="openDialog('{% url 'dele' user.id result.date result.submittime %}')"
+                                class="btn btn-link p-0"
+                                style="border: none; background: none;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
     </div>
 
     <dialog id="confirmDialog">
