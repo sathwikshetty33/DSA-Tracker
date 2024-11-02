@@ -156,14 +156,9 @@ def roomdelete(request, roomid):
 
 @login_required(login_url='teacherlogin')
 def myclass(request, userid):
-    username = request.user
-    tea = teacher.objects.filter(teacher=username).first()
-    if tea is not None:
-        obj1 = get_object_or_404(User, id=userid)
-        obj2 = rooms.objects.filter(students=userid)
-        return render(request, 'dsacounter/myclasses.html', {'obj1': obj1, 'obj2': obj2})
-    else:
-        return redirect('tlogin')
+    obj1 = get_object_or_404(User, id=userid)
+    obj2 = rooms.objects.filter(students=userid)
+    return render(request, 'dsacounter/myclasses.html', {'obj1': obj1, 'obj2': obj2})
 @login_required(login_url='teacherlogin')
 def submissions(request, roomid):
     username = request.user
