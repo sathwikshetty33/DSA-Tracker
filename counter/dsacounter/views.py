@@ -71,13 +71,13 @@ def home(request):
             obj1=studying.objects.filter(student=val,room=val2)
             if not obj1.exists():
                 form.save()
-                messages.success(request,'joined class successfully!')
+                messages.success(request, 'joined class successfully!')
                 return redirect('home')
             else:
                 messages.error(request, "Already in that class")
                 return redirect('home')  # Redirect to the home page or a success page
         else:
-            messages.error(request,"invalid class id")
+            messages.error(request, "invalid class id")
             return redirect('home')
     return render(request, 'dsacounter/counter.html', {'form1': form1, 'form2': form2})
 
@@ -154,7 +154,7 @@ def submissions(request, roomid):
 def deletestudent(request, roomid, studentid):
     obj=get_object_or_404(studying,room=roomid,student=studentid)
     obj.delete()
-    messages.success(request,'Deleted suceesfully')
+    messages.success(request, 'Deleted suceesfully')
     return redirect('dashboard')
 @login_required
 def exitclass(request, userid, roomid):
