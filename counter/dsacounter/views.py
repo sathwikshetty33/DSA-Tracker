@@ -89,7 +89,7 @@ def logout_view(request):
 
 @login_required
 def results(request,username):
-    obj=progress.objects.filter(username=username)
+    obj=progress.objects.filter(username=username)[::-1]
     return render(request, 'dsacounter/results.html', { 'obj' : obj} )
 @login_required
 def dele(request ,date , submittime, username):
