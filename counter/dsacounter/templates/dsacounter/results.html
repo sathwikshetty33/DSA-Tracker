@@ -92,6 +92,7 @@
                     <div class="results-col">Medium</div>
                     <div class="results-col">Hard</div>
                     <div class="results-col">Time Taken</div>
+                    <div class="results-col">Score</div>
                     <div class="delete-col"></div>
                 </div>
 
@@ -104,6 +105,7 @@
                     <div class="results-col">{{ result.medium }}</div>
                     <div class="results-col">{{ result.hard }}</div>
                     <div class="results-col">{{ result.takentime }}</div>
+                    <div class="results-col">{{ result.score }}</div>
                     <div class="delete-col">
                         <button onclick="openDialog('{% url 'dele' user.id result.date result.submittime %}')"
                                 class="btn btn-link p-0"

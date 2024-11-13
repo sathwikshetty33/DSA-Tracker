@@ -157,3 +157,26 @@ function time() {
         requestAnimationFrame(time);  // Use requestAnimationFrame for smoother updates
     }
 }
+// Calculate score based on solved questions and time taken
+function calculateScore() {
+    let easyPoints = m1 * 1; // Easy questions worth 1 point each
+    let mediumPoints = m2 * 2; // Medium questions worth 2 points each
+    let hardPoints = m3 * 3; // Hard questions worth 3 points each
+
+    let baseScore = easyPoints + mediumPoints + hardPoints;
+
+    // Calculate time in minutes
+    let totalMinutes = parseInt(hrString) * 60 + parseInt(minString) + parseInt(secString) / 60;
+
+    // Apply a time-based penalty
+    let timePenalty = totalMinutes / 30;
+    let finalScore = Math.max(0, baseScore - timePenalty); // Ensure score doesn’t go negative
+
+    document.getElementById('score').value = finalScore.toFixed(2); // Set score in hidden field
+}
+
+// Trigger score calculation on form submit
+document.getElementById('taskForm').addEventListener('submit', function(event) {
+    calculateScore();
+    console.log("Final Score:", document.getElementById('score').value); // Optional: Log score for testing
+});
